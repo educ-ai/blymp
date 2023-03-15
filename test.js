@@ -28,6 +28,3 @@ const inventory = [
 function test() {
     alert(calculateCost(inventory));
 }
-
-// Log the total cost
-console.log("Total cost is: " + totalCost);

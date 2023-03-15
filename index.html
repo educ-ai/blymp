@@ -11,26 +11,84 @@
 <link rel="stylesheet" href="bootstrap.min.css">
 <link rel="stylesheet" href="blymp.css">
 <script>
-    function submitClicked() {
-        const text = $("#dropdownMenuButton").text.value;
-        if (text === "0") {
-            alert("Please select a number of episodes");
-        } else {
-            alert("You have selected " + text + " episodes");
+    // Class that has three fields: preRollPrice, midRollPrice, postRollPrice
+    class SegmentPrice {
+        constructor(preRollPrice, midRollPrice, postRollPrice) {
+            this.preRollPrice = preRollPrice;
+            this.midRollPrice = midRollPrice;
+            this.postRollPrice = postRollPrice;
         }
     }
-    function toggleButton() {
-        const text = $("#dropdownMenuButton").text.value;
-        const submitBtn = document.querySelector("#submitBtn");
-        submitBtn.disabled = (text === "0");
+
+    // Set up const global object of SegmentPrice
+    var segmentPrices = new SegmentPrice(11, 12, 13);
+
+    function intFromText(text) {
+        var number = parseInt(text);
+        return isNaN(number) ? 0 : number;
+    }
+
+    function isElementActive(elementId) {
+        const element = document.querySelector(elementId);
+        const containsActive = element.classList.contains("active");
+        return containsActive;
+    }
+
+    function recalculate() {
+        var adCount = intFromText($("#episodeSelectDropdown").text());
+        var segments = 0;
+        var totalCost = 0;
+        if (isElementActive("#pre_roll")) {
+            segments += 1;
+            totalCost += adCount * segmentPrices.preRollPrice;
+        }
+        if (isElementActive("#mid_roll")) {
+            segments += 1;
+            totalCost += adCount * segmentPrices.midRollPrice;
+        }
+        if (isElementActive("#post_roll")) {
+            segments += 1;
+            totalCost += adCount * segmentPrices.postRollPrice;
+        }
+
+        adCount = adCount * segments;
+
+        document.querySelector("#submitBtn").disabled = (adCount == 0);
+        $("#total_ads").text(adCount);
+        $("#total_cost").text("$" + totalCost);
+    }
+
+    function setInnerTextForElementById(elementId, text) {
+        const element = document.querySelector(elementId);
+        element.innerText = text;
+    }
+
+    function fillSegmentPrices(preRollPrice, midRollPrice, postRollPrice) {
+        setInnerTextForElementById("#pre_roll_price", "$" + preRollPrice);
+        setInnerTextForElementById("#mid_roll_price", "$" + midRollPrice);
+        setInnerTextForElementById("#post_roll_price", "$" + postRollPrice);
+    }
+
+    function submitClicked() {
+
     }
 
     $(document).ready(function() {
-      $(".dropdown-item").click(function() {
-        var selectedItemText = $(this).text();
-        $("#dropdownMenuButton").text(selectedItemText);
-        toggleButton();
-      });
+        fillSegmentPrices(11, 12, 13);
+        $(".episode_select").click(function() {
+            var selectedItemText = $(this).text();
+            $("#episodeSelectDropdown").text(selectedItemText);
+            recalculate();
+        });
+
+        $(".segment_btn").click(function() {
+            if ($(this).hasClass("active")) {
+                $(this).removeClass("active");
+            } else {
+                $(this).addClass("active");
+            }
+            recalculate();
+        });
     });
   </script>
 </head>
@@ -42,33 +100,45 @@
                 <h1>John Doe</h1>
                 <h5>Pop Culture, Hip-Hop, Music</h5>
                 <p>
-                    Average monthly listeners: <b>1M</b></br>
-                    Audience: <b>18-35, Male</b></br>
+                    Average monthly listeners: <b>1.2M</b></br>
+                    Audience: <b>18-35, 73% Male</b></br>
                     Platforms: <b>Spotify, YouTube</b>
                 </p>
             </section>
         </section>
-        <section id="inventory" style="background-color: #eff6f5; padding: 20px;">
+        <section id="inventory" style="background-color: #eff6f5; padding: 16px; border-radius: 10px;">
             <h5>Select Inventory</h5>
-            <section style="display: flex; flex-direction: row;">
+            <section class="inv_select_section" style="display: flex; flex-direction: row;">
                 <div style="margin-right:10px; display:flex; align-items:center; margin-bottom: -16px;">
                     <p>Number of Episodes</p>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="episodeSelectDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       0
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">0</a>
-                        <a class="dropdown-item" href="#">1</a>
-                        <a class="dropdown-item" href="#">2</a>
-                        <a class="dropdown-item" href="#">3</a>
-                        <a class="dropdown-item" href="#">4</a>
-                        <a class="dropdown-item" href="#">5</a>
+                    <div class="dropdown-menu" aria-labelledby="episodeSelectDropdown">
+                        <a class="dropdown-item episode_select" href="#">1</a>
+                        <a class="dropdown-item episode_select" href="#">2</a>
+                        <a class="dropdown-item episode_select" href="#">3</a>
+                        <a class="dropdown-item episode_select" href="#">4</a>
+                        <a class="dropdown-item episode_select" href="#">5</a>
                     </div>
-                </div>               
+                </div>
             </section>
-            <button type="submit" class="btn btn-primary" id="submitBtn" disabled onclick="submitClicked()">Submit</button>
+            <section class="btn-group inv_select_section" role="group">
+                <button type="button" id="pre_roll" class="btn btn-secondary segment_btn" data-active-class="btn-primary">Pre-roll (<span id="pre_roll_price"></span>)</button>
+                <button type="button" id="mid_roll" class="btn btn-secondary segment_btn" data-active-class="btn-primary">Mid-roll (<span id="mid_roll_price"></span>)</button>
+                <button type="button" id="post_roll" class="btn btn-secondary segment_btn" data-active-class="btn-primary">Post-roll (<span id="post_roll_price"></span>)</button>
+            </section>
+            <section class="inv_select_section" style="display: flex; flex-direction: row;">
+                <p>Total Ads:&nbsp;</p><p id="total_ads"><b>0</b></p>
+            </section>
+            <section class="inv_select_section" style="display: flex; flex-direction: row;">
+                <p>Total Cost:&nbsp;</p><b><p id="total_cost">$0</p></b>
+            </section>
+            <section class="inv_select_section">
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled onclick="submitClicked()" style="width: 100%;">Submit</button>
+            </section>
         </section>
     </div>
 </body>
