@@ -11,31 +11,23 @@
 <link rel="stylesheet" href="bootstrap.min.css">
 <link rel="stylesheet" href="blymp.css">
 <script>
-    // Class that has three fields: preRollPrice, midRollPrice, postRollPrice
-    class SegmentPrice {
-        constructor(preRollPrice, midRollPrice, postRollPrice) {
-            this.preRollPrice = preRollPrice;
-            this.midRollPrice = midRollPrice;
-            this.postRollPrice = postRollPrice;
-        }
-    }
+    // Class order with the following fields:
+    // Number of Episodes
+    // isPreRoll
+    // isMidRoll
+    // Total Ads: 
+    // Total Cost: 
+
 
     // Set up const global object of SegmentPrice
     var segmentPrices = new SegmentPrice(11, 12, 13);
 
-    function intFromText(text) {
-        var number = parseInt(text);
-        return isNaN(number) ? 0 : number;
-    }
-
-    function isElementActive(elementId) {
-        const element = document.querySelector(elementId);
-        const containsActive = element.classList.contains("active");
-        return containsActive;
+    function episodeCount() {
+        return intFromText($("#episodeSelectDropdown").text());
     }
 
     function recalculate() {
-        var adCount = intFromText($("#episodeSelectDropdown").text());
+        var adCount = episodeCount();
         var segments = 0;
         var totalCost = 0;
         if (isElementActive("#pre_roll")) {
@@ -69,8 +61,40 @@
         setInnerTextForElementById("#post_roll_price", "$" + postRollPrice);
     }
 
+    // Send email from alex@blymp.ca to zane@blymp.ca.
+    // Email should contain:
+    // - Podcaster name
+    // - Number of episodes requested
+    // - Price per episode based on pre-roll, mid-roll, post-roll
+    // - Total cost
     function submitClicked() {
+        var podcasterName = document.querySelector("#podcaster_name").innerHTML;
+        var totalCost = document.querySelector("#total_cost").innerText;
+        var adSegments = "";
+        var segmentCount = 0;
+        if (isElementActive("#pre_roll")) {
+            adSegments += "pre-roll, ";
+            segmentCount++;
+        }
+        if (isElementActive("#mid_roll")) {
+            adSegments += "mid-roll, ";
+            segmentCount++;
+        }
+        if (isElementActive("#post_roll")) {
+            adSegments += "post-roll, ";
+            segmentCount++;
+        }
+        adSegments = adSegments.substring(0, adSegments.length - 2);
 
+        var emailBody = "Podcaster Name: " + podcasterName + "\n" + 
+                        "Number of Episodes: " + episodeCount() + "\n" +
+                        "Ad Segments: " + adSegments + "\n" +
+                        "Total ad count: " + episodeCount() * segmentCount  + "\n" +
+                        "Total Cost: " + totalCost;
+
+        var emailSubject = "Blymp Ad Request";
+
+        alert(emailBody);
     }
 
     $(document).ready(function() {
@@ -97,7 +121,7 @@
         <section id="profile_main" style="display: flex; flex-direction: row;">
             <img style="height: 80px;" src="data:image/png;base64,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" alt="Profile" />
             <section id="profile_info">
-                <h1>John Doe</h1>
+                <h1 id="podcaster_name">John Doe</h1>
                 <h5>Pop Culture, Hip-Hop, Music</h5>
                 <p>
                     Average monthly listeners: <b>1.2M</b></br>
@@ -131,7 +155,7 @@
                 <button type="button" id="post_roll" class="btn btn-secondary segment_btn" data-active-class="btn-primary">Post-roll (<span id="post_roll_price"></span>)</button>
             </section>
             <section class="inv_select_section" style="display: flex; flex-direction: row;">
-                <p>Total Ads:&nbsp;</p><p id="total_ads"><b>0</b></p>
+                <p>Total Ads:&nbsp;<b><span id="total_ads">0</span></b></p>
             </section>
             <section class="inv_select_section" style="display: flex; flex-direction: row;">
                 <p>Total Cost:&nbsp;</p><b><p id="total_cost">$0</p></b>
