@@ -1,15 +1,43 @@
+body {
+    color: white;
+}
+
 .main_div {
-	background-color: white;
-    border-radius: 20px;
-    padding: 20px;
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     min-width: 300px;
+}
+
+.inventory {
+    /* position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%); */
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(20,20,23,0.788);
+    -webkit-backdrop-filter: blur(0.6rem);
+    backdrop-filter: blur(0.6rem);
+    box-shadow: 0rem 0.875rem 2.125rem 0rem rgba(0,0,0,0.329);
+    border-radius: 1.25rem;
+    padding: 20px;
 }
 
 .inv_select_section {
     padding: 4px 0 4px 0;
     width: 100%;
+}
+
+.avatar {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 100%;
+    border-color: #FFFFFF;
+    border-style: solid;
+    border-width: 8px;
+    box-shadow: 0rem 0.75rem 1.125rem 0rem rgba(0,0,0,0.122);
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
 }
