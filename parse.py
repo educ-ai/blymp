@@ -5,16 +5,18 @@ def parse_input_to_csv(input_filename, output_filename):
     with open(input_filename, "r") as input_file:
         parsed_input_array = json.load(input_file)
     with open(output_filename, "w") as output_file:
-        output_file.write("Title\tAuthor\tEmail\n")
+        output_file.write("Title\tEmail\n")
         for parsed_input in parsed_input_array:
-            channel_place = parsed_input.get("channel_place", "")
-            if channel_place != "United States" and channel_place != "Canada":
-                continue
-            title = parsed_input.get("title", "")
-            author = parsed_input.get("author", "")
+            # channel_place = parsed_input.get("channel_place", "")
+            # if channel_place != "United States" and channel_place != "Canada":
+            #     continue
+            title = parsed_input.get("short_name", "")
+            # author = parsed_input.get("author", "")
             email = parsed_input.get("email", "")
+            if email == None:
+                continue
             output_file.write(title + "\t")
-            output_file.write(author + "\t")
+            # output_file.write(author + "\t")
             output_file.write(email + "\n")
     print("CSV file generated successfully.")
 
