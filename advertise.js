@@ -74,5 +74,22 @@
 //       "earliest_pub_date"
 //     ]
 //   }
-  
 
+function parseInputToCSV(input) {
+    var parsedInput = JSON.parse(input);
+    var csv = "";
+    csv += parsedInput.title + ",";
+    csv += parsedInput.author + ",";
+    csv += parsedInput.email + ",";
+    csv += parsedInput.image + ",";
+    csv += parsedInput.channel_image + ",";
+    csv += parsedInput.website + ",";
+    csv += parsedInput.channel_place + ",";
+    csv += parsedInput.channel_language + ",";
+    csv += parsedInput.episode_count + ",";
+    csv += parsedInput.listen_score_top_percentage_humanized + ",";
+    csv += parsedInput.audio_length_humanized + ",";
+    csv += parseGenres(parsedInput.genres) + ",";
+    csv += parsedInput.earliest_pub_date;
+    return csv;
+}
